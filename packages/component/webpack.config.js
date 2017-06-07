@@ -1,6 +1,7 @@
 const path = require('path');
 
 const webpack = require('webpack');
+const BabiliPlugin = require('babili-webpack-plugin');
 const ExternalsPlugin = require("webpack/lib/ExternalsPlugin");
 
 
@@ -66,11 +67,7 @@ module.exports = {
         new webpack.DefinePlugin({
             'process.env.NODE_ENV': '"production"',
         }),
-        // new webpack.optimize.UglifyJsPlugin({
-        //     compress: {warnings: false},
-        //     mangle: {},
-        //     sourceMap: false,
-        // }),
+        new BabiliPlugin(),
         new webpack.LoaderOptionsPlugin({
             minimize: true,
         }),

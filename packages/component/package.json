@@ -4,13 +4,15 @@
   "description": "",
   "main": "src/index.js",
   "scripts": {
-    "build": "rm build/*.js && rm build/*.map && webpack --progress"
+    "build": "rm -f build/*.js && rm -f build/*.map && webpack --progress",
+    "production": "BABEL_ENV=production npm run build"
   },
   "author": "Matt Basta <me@mattbasta.com>",
   "license": "MIT",
   "dependencies": {
     "@pinecast/encoder-worker": "^0.0.1",
     "babel-core": "^6.24.1",
+    "babili": "^0.1.2",
     "react": "^15.5.4",
     "react-dom": "^15.5.4",
     "react-dropzone": "^3.13.2",
@@ -19,6 +21,7 @@
   "devDependencies": {
     "babel-loader": "^7.0.0",
     "babel-preset-react": "^6.24.1",
+    "babili-webpack-plugin": "^0.1.1",
     "webpack": "^2.6.1"
   }
 }
