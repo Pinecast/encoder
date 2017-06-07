@@ -10,6 +10,8 @@
   "license": "MIT",
   "dependencies": {
     "audio-decode": "^1.2.5",
-    "lamejs": "^1.1.0"
+    "lamejs": "^1.1.0",
+    "webpack": "^2.6.1",
+    "worker-loader": "^0.8.0"
   }
 }

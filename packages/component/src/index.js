@@ -4,7 +4,7 @@ import ReactDOM from 'react-dom';
 import Encoder from './component';
 
 
-Array.from(document.querySelector('[data-pinecoder]')).forEach(elem => {
+Array.from(document.querySelectorAll('[data-pinecoder]')).forEach(elem => {
     ReactDOM.render(
         <Encoder />,
         elem

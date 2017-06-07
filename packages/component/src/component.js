@@ -9,6 +9,10 @@ class Manager {
         this.component = component;
         this.progress = 0;
         this.error = null;
+
+        this.blob = null;
+        this.url = null;
+
         encode(
             file,
             progress => {
@@ -16,8 +20,10 @@ class Manager {
                 this.update();
             }
         ).then(
-            () => {
+            encodedData => {
                 this.progress = 100;
+                this.blob = new Blob([encodedData], {type: 'audio/mp3'});
+                this.url = URL.createObjectURL(this.blob);
                 this.update();
             },
             err => {
@@ -32,7 +38,7 @@ class Manager {
     }
     update() {
         this.component.setState({
-            files: this.component.state.files.map(file => file.getEntry()),
+            files: this.component.state.files.map(file => file.inst.getEntry()),
         });
     }
     getEntry() {
@@ -73,10 +79,14 @@ export default class Encoder extends PureComponent {
             </Dropzone>
             {this.state.files.map(file =>
                 <div>
-                    <div>{file.getName()}</div>
+                    <div>{file.inst.getName()}</div>
                     <div>
                         <progress value={file.progress} max={100} />
                     </div>
+                    {file.inst.blob &&
+                        <a download={file.inst.getName().replace(/\.\w+$/, '') + '.mp3'} href={file.inst.url}>
+                            Download MP3
+                        </a>}
                 </div>
             )}
         </div>;
