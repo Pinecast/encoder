@@ -3,7 +3,6 @@
 *.swp
 *.egg-info
 .#*
-build
 *~
 .buildout
 *.elc
