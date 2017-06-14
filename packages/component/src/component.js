@@ -1,94 +1,8 @@
 import Dropzone from 'react-dropzone';
-import ID3Writer from 'browser-id3-writer';
 import React, {PureComponent} from 'react';
 
-import encode from '@pinecast/encoder-worker';
-
+import Manager from './manager';
 import FileInstance from './file-instance';
-
-
-class Manager {
-    constructor(file, component) {
-        this.file = file;
-        this.component = component;
-        this.progress = 0;
-        this.error = null;
-
-        this.blob = null;
-        this.url = null;
-
-        this.quality = null;
-        this.id3Written = false;
-    }
-
-    setQuality(quality) {
-        this.quality = quality;
-        this.doEncode();
-    }
-
-    doEncode() {
-        encode(
-            this.file,
-            this.quality,
-            progress => {
-                this.progress = progress;
-                this.update();
-            }
-        ).then(
-            encodedData => {
-                this.progress = 100;
-                this.encodedData = encodedData;
-
-                this.update();
-            },
-            err => {
-                this.error = err;
-                this.update();
-            },
-        );
-    }
-    writeID3(metadata) {
-        if (!metadata) {
-            this.id3Written = true;
-            this.blob = new Blob([this.encodedData], {type: 'audio/mp3'});
-            this.url = URL.createObjectURL(this.blob);
-            this.update();
-            return;
-        }
-
-        const writer = new ID3Writer(this.encodedData);
-        if (metadata.title) writer.setFrame('TIT2', String(metadata.title));
-        if (metadata.author) {
-            writer.setFrame('TPE1', [String(metadata.author)]);
-            writer.setFrame('TPE2', String(metadata.author));
-        }
-        if (metadata.podcast) writer.setFrame('TALB', String(metadata.podcast));
-        writer.setFrame('TCON', ['Podcast']);
-        writer.addTag();
-
-        this.id3Written = true;
-        this.blob = writer.getBlob();
-        this.url = URL.createObjectURL(this.blob);
-        this.update();
-    }
-
-    getName() {
-        return this.file.name;
-    }
-    update() {
-        this.component.setState({
-            files: this.component.state.files.map(file => file.inst.getEntry()),
-        });
-    }
-    getEntry() {
-        return {
-            id3Written: this.id3Written,
-            inst: this,
-            progress: this.progress,
-            quality: this.quality,
-        };
-    }
-}
 
 
 export default class Encoder extends PureComponent {
@@ -125,7 +39,22 @@ export default class Encoder extends PureComponent {
             transition: 'transform 0.2s',
             width: 'auto',
         };
+
+        const {files} = this.state;
         return <div>
+            {!files.length &&
+                <section>
+                    <p>
+                        At Pinecast, we see the lack of high-quality MP3 encoders available
+                        to podcasters. The ones that exist are confusing and don't follow best
+                        practices. So we made our own, Pinecoder.
+                    </p>
+                    <p>
+                        To encode an MP3 for your podcast, export your episode as WAV, FLAC, or
+                        192kbps MP3 and drag it into the box below. We'll walk you through the
+                        rest.
+                    </p>
+                </section>}
             <Dropzone
                 accept='audio/flac, audio/wav, audio/mpeg, audio/mp3'
                 activeStyle={
@@ -136,10 +65,10 @@ export default class Encoder extends PureComponent {
             >
                 Drop source audio here
                 <br />
-                or <a href=''>click to browse</a>
+                or <a href='' onClick={e => e.preventDefault()}>click to browse</a>
             </Dropzone>
             <div style={{padding: '50px 0'}}>
-                {this.state.files.map((file, i) => <FileInstance {...file} key={i} />)}
+                {files.map((file, i) => <FileInstance {...file} key={i} />)}
             </div>
         </div>;
     }
