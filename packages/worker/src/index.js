@@ -1,7 +1,13 @@
 const Worker = require('worker-loader!./worker.js');
 
 
-export default function(buffer, onProgress = () => {}) {
+const bitrates = {
+  'low': 96,
+  'medium': 128,
+};
+
+
+export default function(buffer, quality, onProgress = () => {}) {
   return new Promise((resolve, reject) => {
     const w = new Worker();
     w.addEventListener('message', e => {
@@ -22,6 +28,7 @@ export default function(buffer, onProgress = () => {}) {
         decoded => {
           const newData = decoded.getChannelData(0);
           w.postMessage(decoded.sampleRate);
+          w.postMessage(bitrates[quality]);
           w.postMessage(newData.buffer, [newData.buffer]);
         },
         reject
@@ -33,4 +40,4 @@ export default function(buffer, onProgress = () => {}) {
     reader.readAsArrayBuffer(buffer);
 
   });
-}
+};

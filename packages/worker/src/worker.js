@@ -16,16 +16,16 @@ const SAMPLE_BLOCK_SIZE = 1152;
 const gotData = [];
 self.addEventListener('message', e => {
   gotData.push(e.data);
-  if (gotData.length === 2) {
+  if (gotData.length === 3) {
     hasAllData();
   }
 });
 
 function hasAllData() {
-  const [sampleRate, data] = gotData;
+  const [sampleRate, bitrate, data] = gotData;
   const converted = floatToInt(new Float32Array(data));
 
-  const encoder = new lame.Mp3Encoder(1, sampleRate, 128);
+  const encoder = new lame.Mp3Encoder(1, sampleRate, bitrate);
 
   const mp3Data = [];
   for (let i = 0; i < converted.length; i += SAMPLE_BLOCK_SIZE) {

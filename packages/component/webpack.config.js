@@ -54,6 +54,7 @@ module.exports = {
     resolve: {
         mainFields: [
             'jsnext:main',
+            'module',
             'main',
         ],
     },
@@ -67,10 +68,10 @@ module.exports = {
         new webpack.DefinePlugin({
             'process.env.NODE_ENV': '"production"',
         }),
-        new BabiliPlugin(),
-        new webpack.LoaderOptionsPlugin({
-            minimize: true,
-        }),
+        // new BabiliPlugin(),
+        // new webpack.LoaderOptionsPlugin({
+        //     minimize: true,
+        // }),
     ],
     module: {
         rules: [
