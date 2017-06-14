@@ -1,6 +1,6 @@
 {
   "name": "@pinecast/encoder-worker",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Worker library for encoder",
   "jsnext:main": "src/index.js",
   "scripts": {
